@@ -1,8 +1,9 @@
-
 import pyRA
 
 import pygad
 import numpy as np
+
+#Example to showcase the pyRA module and tìits capabilities, in this implementation try solve a 2-parity problem with 9 bits
 
 
 N_REACTIONS = 5
@@ -26,6 +27,7 @@ keep_parents = 0
 keep_elitism = 10
 crossover_type = "single_point"
 
+# probablity for the geometric distribution
 p_geom_distribution = 0.75
 
 # improperly used parameters
@@ -36,14 +38,14 @@ mutation_min_val = 0.12 # probability of being non-zero for reactants and produc
 inh_prob = 0.1 # probability of an inhibitor to be set on (up to contradictions)
 probs = np.array([0.1,0.8,0.1]) # probabilities of mutating the initial state, the reactions, the final states
 
-# UNUSED
+# NOT USED IN THIS EXAMPLE
 def test_func_lin(x):
     return (x[0] + x[1])%3 + 3*x[2]
-# UNUSED
+# NOT USED IN THIS EXAMPLE
 def test_func(x):
     return x[0]**2 + x[1]*x[2]
 
-# UNUSED
+# NOT USED IN THIS EXAMPLE
 inputs = [pyRA.Vect([a,b,c]) for a in range(0,10) for b in range(0,10) for c in range(0,10)]
 
 # generating binary sequences
@@ -65,29 +67,28 @@ def fitness_function_seq(ga_instance, individual, idx, acc_seqs, rej_seqs):
     words, accs = zip(*samples)
     return pyRA.eval_fitness_seq(pyRA.AGenome(pyRA.Vect(individual), N_REACTIONS),list(map(pyRA.Vect,words)), accs, 40)
 
-#UNUSED
+# NOT USED IN THIS EXAMPLE
 def fitness_function_seq_pure(ga_instance, individual, idx, acc_seqs, rej_seqs):
     samples = list(zip(acc_seqs+rej_seqs, [True]*len(acc_seqs) + [False]*len(rej_seqs)))
     words, accs = zip(*samples)
     return pyRA.eval_fitness_seq_pure(pyRA.AGenome(pyRA.Vect(individual), N_REACTIONS),list(map(pyRA.Vect,words)), accs, 40)
 
-#UNUSED
+# NOT USED IN THIS EXAMPLE
 def fitness_function_func(ga_instance, individual, idx):
     return pyRA.eval_fitness_func(pyRA.FGenome(pyRA.Vect(individual)),test_func, inputs, 40)
 
-# UNUSED
+# NOT USED IN THIS EXAMPLE
 def fitness_function_func_pure(ga_instance, individual, idx):
     return pyRA.eval_fitness_func_pure(pyRA.FGenome(pyRA.Vect(individual)),test_func, inputs, 40)
 
-
-# UNUSED
+# NOT USED IN THIS EXAMPLE
 def mutation_func_func(offspring, ga_instance):
     for _ in range(int(1/ga_instance.mutation_probability)):
         pyRA.fgenome_mutation_2Darr(offspring, probs, 1.0, p_geom_distribution,
                                  ga_instance.random_mutation_min_val,inh_prob)
     return offspring
 
-def mutation_func_acc(offspring, ga_instance):
+def mutation_func_seq(offspring, ga_instance):
     for _ in range(int(1/ga_instance.mutation_probability)):
         pyRA.agenome_mutation_2Darr(offspring, N_REACTIONS,probs, 1.0, p_geom_distribution,
                                 ga_instance.random_mutation_min_val, inh_prob)
@@ -122,7 +123,7 @@ ga_problem = pygad.GA(
                        random_mutation_min_val=mutation_min_val,
                        random_mutation_max_val=mutation_max_val,
                        crossover_type=crossover_type,
-                       mutation_type=mutation_func_acc,
+                       mutation_type=mutation_func_seq,
                        mutation_probability=mutation_probability,
                        on_generation=on_gen,
                        #parallel_processing=["thread",5],
@@ -131,10 +132,11 @@ ga_problem = pygad.GA(
 
 # run the genetic algorithm
 ga_problem.run()
+# save results
 np.save("2-parity", best_fitness)
 ga_problem.save("2-parity")
 
-# print results
+# print results, 
 print("Best individual:")
 x = pyRA.AGenome(pyRA.Vect(ga_problem.best_solution()[0]), N_REACTIONS)
 x.print()
