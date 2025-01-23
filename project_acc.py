@@ -164,8 +164,8 @@ ga_problem = pygad.GA(
 
 # run the genetic algorithm
 ga_problem.run()
-np.save("2-parity", best_fitness)
-ga_problem.save("2-parity")
+np.save("2-parity-pure", best_fitness)
+ga_problem.save("2-parity-pure")
 
 # print results
 print("Best individual:")
