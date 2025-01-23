@@ -3,10 +3,11 @@ import pyRA
 import pygad
 import numpy as np
 
-#Example to showcase the pyRA module and tìits capabilities, in this implementation try solve a 2-parity problem with 9 bits
+#Example to showcase the pyRA module and its capabilities, in this implementation try solve a 2-parity problem with 9 bits
 
 
 N_REACTIONS = 5
+
 
 num_generations = 1000
 sol_per_pop = 100
